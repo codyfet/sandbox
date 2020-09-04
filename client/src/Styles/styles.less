@@ -1,0 +1,136 @@
+body {
+    background: #faf6f0;
+    font-family: 'Roboto', sans-serif;
+
+    .registration {
+        max-width: 650px;
+        margin: 50px auto 0;
+        text-align: center;
+
+        .registration-form {
+            background: #e4e3e0;
+            padding: 20px;
+            margin: 80px auto 0;
+            width: 300px;
+
+            .registration-form-name {
+                width: 100%;
+            }
+
+            .registration-form-button {
+                margin-top: 20px;
+            }
+        }
+    }
+
+    blockquote {
+        border-left: 3px #000 solid;
+        padding: 30px 0 30px 30px;
+        margin: 0;
+    }
+
+    p {
+        font-size: 24px;
+        text-align: left;
+        line-height: 1.8;
+        font-weight: 400;
+        color: #000;
+    }
+
+    a.ui.a-button {
+        background: none;
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-radius: 0;
+        padding: 0 0 6px 0;
+        margin: 0 10px;
+        border-color: black;
+        color: black;
+
+        &:hover {
+            background: none;
+            color: #c00000;
+            border-color: #c00000;;
+            transition: none;
+        }
+
+        &:focus {
+            background: none;
+        }
+    }
+
+    .userinfo {
+        text-align: right;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .label {
+        margin: 10px 0;
+    }
+
+    .ui.input > input {
+        border-radius: 0;
+    }
+
+    .ui.segment {
+        border-radius: 0;
+    }
+
+    .task-panel {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .task {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    }
+
+    .badges {
+        display: flex;
+
+        .star-badge {
+            color: gray;
+        }
+    }
+
+    .sandbox-actions {
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    #mocha-stats {
+        display: none;
+    }
+
+    #mocha-report {
+        display: none;
+    }
+
+    a.ui.label {
+        border-radius: 0;
+    }
+
+    a.ui.label.passed {
+        margin: 10px;
+        margin-left: 0;
+    }
+
+    .ui.ribbon.label {
+        border-radius: 0;
+        left: calc(0em - 1.2em);
+    }
+
+    .ui.table {
+        margin-top: 0;
+        border-radius: 0;
+    }
+
+    .failed-section {
+        margin-top: 5px;
+    }
+}

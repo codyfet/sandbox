@@ -1,11 +1,11 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssestsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssestsWebpackPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserWebpackPlugin = require("terser-webpack-plugin");
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 const isProd = !isDev;
 
 /**
@@ -14,34 +14,34 @@ const isProd = !isDev;
 const getOptimization = () => {
     const config = {
         splitChunks: {
-            chunks: 'all'
+            chunks: "all"
         }
-    }
+    };
 
     if (isProd) {
         config.minimizer = [
             new OptimizeCssAssestsWebpackPlugin(),
             new TerserWebpackPlugin(),
-        ]
+        ];
     }
 
     return config;
-}
+};
 
 /**
  * Возвращает конфиг для обработки js|jsx файлов в зависимости от режима сборки.
  */
 const getJsLoaders = () => {
     const loaders = [{
-        loader: 'babel-loader'
+        loader: "babel-loader"
     }];
 
     if (isDev) {
-        loaders.push('eslint-loader')
+        loaders.push("eslint-loader");
     }
 
     return loaders;
-}
+};
 
 /**
  * Возвращает конфиг для обработки css файлов.
@@ -58,15 +58,21 @@ const getCssLoaders = (extraLoaders) => {
           reloadAll: true
         },
       },
-      'css-loader'
-    ]
+      "css-loader",
+      {
+        loader: "postcss-loader",
+        options: {
+            plugins: () => [require("autoprefixer")],
+        }
+    }
+    ];
 
     if (extraLoaders) {
-      loaders.push(extraLoaders)
+      loaders.push(extraLoaders);
     }
 
-    return loaders
-  }
+    return loaders;
+  };
 
 /**
  * Возвращает имя файла с хэшем, либо без - в зависимости от режима сборки.
@@ -75,20 +81,27 @@ const getCssLoaders = (extraLoaders) => {
  */
 const getDistFilename = (extension) => {
     return isDev ? `[name].${extension}` : `[name].[hash].${extension}`;
-}
+};
 
 module.exports = {
-    context: path.resolve(__dirname, 'src'),
-    entry: './index.js',
+    context: path.resolve(__dirname, "src"),
+    entry: ["@babel/polyfill", "./index.js"],
     output: {
-        filename: getDistFilename('js'),
-        path: path.resolve(__dirname, 'dist')
+        filename: getDistFilename("js"),
+        path: path.resolve(__dirname, "dist"),
     },
     devServer: {
         port: 4210,
-        hot: isDev
+        hot: isDev,
+        historyApiFallback: true,
+        proxy: {
+            "/api/**": {
+                target: "http://localhost:5000",
+                secure: false
+            }
+        }
     },
-    devtool: isDev ? 'source-map' : '',
+    devtool: isDev ? "source-map" : "",
     module: {
         rules: [
             {
@@ -102,28 +115,32 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                use: getCssLoaders('less-loader')
+                use: getCssLoaders("less-loader")
             },
             {
                 test: /\.(png|jpg|svg|gif)$/,
-                use: ['file-loader']
-            }
+                use: ["file-loader"]
+            },
+            {
+                test: /\.(ttf|woff|woff2|eot)$/,
+                use: ["file-loader"]
+            },
         ]
     },
     resolve: {
-        extensions: ['.js', '.css', '.less', '.png']
+        extensions: [".js", ".css", ".less", ".png"]
     },
     optimization: getOptimization(),
     plugins: [
         new HtmlWebpackPlugin({
-            template: './index.html',
+            template: "./index.html",
             minify: {
                 collapseWhitespace: isProd
             }
         }),
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            filename: getDistFilename('css'),
+            filename: getDistFilename("css"),
         })
     ]
-}
+};

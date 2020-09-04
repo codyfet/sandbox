@@ -1,0 +1,204 @@
+import React, {useCallback, useContext, useEffect, useState} from "react";
+import {Button, Container, Grid, Icon, Label, Segment, Table} from "semantic-ui-react";
+import {str_pad_left} from "../Utils/TimeUtils";
+import {AppContext} from "../Contexts/AppContext";
+import {TimeLeftModal} from "./TimeLeftModal";
+import {getSolvedCount} from "../Utils/CommonUtils";
+import mocha from "mocha/mocha";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/mode/markdown/markdown";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/monokai.css";
+// eslint-disable-next-line no-unused-vars
+const assert = require("assert");
+
+/**
+ * Настройки CodeMirror.
+ */
+const CODE_MIRROR_OPTIONS = {
+    lineNumbers: true,
+    mode: "javascript",
+    theme: "monokai"
+};
+
+/**
+ * Страница Сессии.
+ */
+export const Session = () => {
+    const {appState, dispatch} = useContext(AppContext);
+    mocha.setup("bdd");
+    mocha._cleanReferencesAfterRun = false;
+
+    useEffect(() => {
+        if (!appState.session.remainedTime) {
+            return;
+        }
+
+        const intervalId = setInterval(() => {
+            dispatch({
+                type: "CHANGE_REMAINED",
+                payload: appState.session.remainedTime - 1
+            });
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, [appState.session.remainedTime, dispatch]);
+
+    // Логика вычисления текущей задачи.
+    const currentTaskIndex = appState.session.tasks.findIndex((item) => item.isCurrent);
+    const task = appState.session.tasks[currentTaskIndex];
+
+    // Логика таймера
+    const minutes = Math.floor(appState.session.remainedTime / 60);
+    const seconds = appState.session.remainedTime - minutes * 60;
+    const finalTime = str_pad_left(minutes, "0", 2) + ":" + str_pad_left(seconds, "0", 2);
+
+    // Логика бэджей
+    const badges = [];
+    const solvedCount = getSolvedCount(appState);
+    for (let i = 0; i < solvedCount; i++) {
+        badges.push(
+            <div><Icon className="star-badge" name='star' size='huge' key={i} /></div>
+        );
+    }
+
+    const [currentCode, setCurrentCode] = useState(task.preCode);
+
+    useEffect(() => {
+        setCurrentCode(task.preCode);
+    }, [task.preCode]);
+
+    /**
+     * Обработчик изменения кода.
+     */
+    const handleCodeChange = useCallback((editor, data, code) => {
+        setCurrentCode(code);
+    }, []);
+
+    /**
+     * Обработчик нажатия на кнопку Выполнить.
+     */
+    const handleRunClick = useCallback(() => {
+        /**
+         * Очищаем тестовые данные с предыдущего раза.
+         */
+        if (mocha.suite.suites.length > 0) {
+            mocha.suite.suites = [];
+        }
+
+        dispatch({
+            type: "CLEAR_REPORT"
+        });
+
+        eval(`${currentCode} ${task.test}`);
+
+        mocha
+          .run()
+          .on("fail", (test) => {
+            dispatch({
+                type: "ADD_FAILED_TEST",
+                payload: test
+            });
+          })
+          .on("pass", (test) => {
+            dispatch({
+                type: "ADD_PASSED_TEST",
+                payload: {
+                    id: task.id,
+                    test
+                },
+
+            });
+          });
+    }, [currentCode, dispatch, task.id, task.test]);
+
+    /**
+     * Обработчик нажатия на кнопку Выполнить.
+     */
+    const handleNextClick = useCallback(() => {
+        dispatch({
+            type: "CHANGE_TASK_INDEX",
+            payload: currentTaskIndex + 1
+        });
+    }, [dispatch, currentTaskIndex]);
+
+    return (
+        <Container className="session">
+            <div className="userinfo">
+                <div>
+                    {appState.name}
+                </div>
+                <div>
+                    {finalTime}
+                </div>
+            </div>
+            <h1>Задание {currentTaskIndex + 1}</h1>
+            <Segment >
+                <Grid className="profile-data">
+                    <Grid.Column className={"task-panel"} width={8}>
+                        <div className="task">
+                            {task.description}
+                        </div>
+                        <CodeMirror
+                            value={currentCode}
+                            onBeforeChange={handleCodeChange}
+                            onChange={handleCodeChange}
+                            options={CODE_MIRROR_OPTIONS}
+                        />
+                        <div className="sandbox-actions">
+                            <Button onClick={handleRunClick} as="a" key="run" className="a-button">Выполнить</Button>
+                            {appState.passedTests.length === task.testsCount && <Button onClick={handleNextClick} as="a" key="next" className="a-button">Далее</Button>}
+                        </div>
+                    </Grid.Column>
+                    <Grid.Column width={8}>
+                        <div id="mocha"></div>
+                        {
+                            (appState.passedTests.length > 0 || appState.failedTests.length > 0) && (
+                                <div>
+                                    <div>
+                                        Результат выполнения тестов:
+                                    </div>
+                                    <div>
+                                        <Label className="passed" color='green' as='a'>
+                                            <Icon name='check' /> {appState.passedTests.length}
+                                        </Label>
+                                        <Label className="failed" color='red' as='a'>
+                                            <Icon name='cancel' /> {appState.failedTests.length}
+                                        </Label>
+                                    </div>
+                                    {appState.failedTests.length > 0 && (
+                                        <div className="failed-section">
+                                            <Label as='a' color='red' ribbon>
+                                                Не пройдены тесты
+                                            </Label>
+                                            <Table celled>
+                                                <Table.Body>
+                                                    {
+                                                        appState.failedTests.map(
+                                                            (item) => {
+                                                                return (
+                                                                    <Table.Row key={item.title} negative>
+                                                                        <Table.Cell>{item.title}</Table.Cell>
+                                                                        <Table.Cell><Icon name='close' />Не пройден</Table.Cell>
+                                                                    </Table.Row>
+                                                                );
+                                                            }
+                                                        )
+                                                    }
+                                                </Table.Body>
+                                            </Table>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        }
+
+                    </Grid.Column>
+                </Grid>
+            </Segment>
+            <div className="badges">{badges}</div>
+            {appState.session.remainedTime === 0 && <TimeLeftModal />}
+        </Container>
+    );
+};
