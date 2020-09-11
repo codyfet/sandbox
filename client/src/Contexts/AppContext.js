@@ -6,6 +6,7 @@ const appInitialState = {
     failedTests: [],
     passedTests: [],
     session: {
+        id: null,
         remainedTime: 60 * 10,
         // remainedTime: 10,
         /**
@@ -96,6 +97,15 @@ const reducer = (state, action) => {
             ...state,
             failedTests: [],
             passedTests: []
+        };
+    }
+    if (action.type === "SAVE_SESSION_ID") {
+        return {
+            ...state,
+            session: {
+                ...state.session,
+                id: action.payload
+            }
         };
     }
 };

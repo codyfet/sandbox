@@ -10,6 +10,7 @@ import "codemirror/mode/markdown/markdown";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/monokai.css";
+import {putData} from "../Utils/RequestUtils";
 // eslint-disable-next-line no-unused-vars
 const assert = require("assert");
 
@@ -27,6 +28,7 @@ const CODE_MIRROR_OPTIONS = {
  */
 export const Session = () => {
     const {appState, dispatch} = useContext(AppContext);
+    const [error, setError] = useState(null);
     mocha.setup("bdd");
     mocha._cleanReferencesAfterRun = false;
 
@@ -48,6 +50,14 @@ export const Session = () => {
     // Логика вычисления текущей задачи.
     const currentTaskIndex = appState.session.tasks.findIndex((item) => item.isCurrent);
     const task = appState.session.tasks[currentTaskIndex];
+    const currentTaskSolved = appState.passedTests.length === task.testsCount;
+
+    if (currentTaskSolved) {
+        putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1})
+            .then((data) => {
+                console.log(data);
+            });
+    }
 
     // Логика таймера
     const minutes = Math.floor(appState.session.remainedTime / 60);
@@ -87,11 +97,18 @@ export const Session = () => {
             mocha.suite.suites = [];
         }
 
+        setError(null);
+
         dispatch({
             type: "CLEAR_REPORT"
         });
 
-        eval(`${currentCode} ${task.test}`);
+        try {
+            eval(`${currentCode} ${task.test}`);
+        } catch (error) {
+            setError(error.message);
+        }
+
 
         mocha
           .run()
@@ -147,12 +164,20 @@ export const Session = () => {
                             options={CODE_MIRROR_OPTIONS}
                         />
                         <div className="sandbox-actions">
-                            <Button onClick={handleRunClick} as="a" key="run" className="a-button">Выполнить</Button>
-                            {appState.passedTests.length === task.testsCount && <Button onClick={handleNextClick} as="a" key="next" className="a-button">Далее</Button>}
+                            <Button disabled={currentTaskSolved} onClick={handleRunClick} as="a" key="run" className="a-button">Выполнить</Button>
+                            {currentTaskSolved && <Button onClick={handleNextClick} as="a" key="next" className="a-button">Далее</Button>}
                         </div>
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <div id="mocha"></div>
+                        {
+                            error && (
+                                <div>
+                                    Ошибка!
+                                    <div className="error-block">{error}</div>
+                                </div>
+                            )
+                        }
                         {
                             (appState.passedTests.length > 0 || appState.failedTests.length > 0) && (
                                 <div>

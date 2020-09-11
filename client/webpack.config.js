@@ -136,7 +136,8 @@ module.exports = {
             template: "./index.html",
             minify: {
                 collapseWhitespace: isProd
-            }
+            },
+            favicon: "./Assets/acc_favicon.ico"
         }),
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
