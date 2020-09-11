@@ -14,7 +14,7 @@ const PORT = 5000;
 
 async function start() {
     try {
-        await mongoose.connect("mongodb://admin:.gb.gb30@ds129904.mlab.com:29904/conference"), {
+        await mongoose.connect("mongodb://admin:.gb.gb30@ds129904.mlab.com:29904/conference", {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true
