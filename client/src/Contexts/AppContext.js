@@ -7,6 +7,7 @@ const appInitialState = {
     passedTests: [],
     session: {
         id: null,
+        task: null,
         remainedTime: 60 * 10,
         // remainedTime: 10,
         /**
@@ -104,7 +105,8 @@ const reducer = (state, action) => {
             ...state,
             session: {
                 ...state.session,
-                id: action.payload
+                id: action.payload.sessionId,
+                task: action.payload.task
             }
         };
     }

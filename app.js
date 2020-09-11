@@ -7,9 +7,11 @@ app.use(express.json({extended: true, limit: '50mb'}));
 
 // app.use("/api/auth", require("./routes/auth.routes"));
 
-app.use("/api/record", require("./routes/record.routes"));
+// app.use("/api/record", require("./routes/record.routes"));
 app.use("/api/session", require("./routes/session.routes"));
-app.use("/api/stat", require("./routes/stat.routes"));
+app.use("/api/code", require("./routes/code.routes"));
+app.use("/api/task", require("./routes/task.routes"));
+// app.use("/api/stat", require("./routes/stat.routes"));
 
 const PORT = 5000;
 

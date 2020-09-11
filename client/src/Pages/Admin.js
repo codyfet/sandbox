@@ -1,9 +1,5 @@
 import React, {useEffect, useState} from "react";
-// import { useHistory } from "react-router-dom";
-// import { Button, Input } from "semantic-ui-react";
-// import { AppContext } from "../Contexts/AppContext";
-// import { postData } from "../Utils/RequestUtils";
-import {Container, List, Rating, Table} from "semantic-ui-react";
+import {Container, Header, Icon, List, Table} from "semantic-ui-react";
 
 function getFormattedDateTime(dateString) {
     const dt = new Date(dateString);
@@ -15,6 +11,28 @@ function getFormattedDateTime(dateString) {
         dt.getMinutes().toString().padStart(2, "0")}:${
         dt.getSeconds().toString().padStart(2, "0")}`;
 }
+
+function getDifferenceInSeconds(a, b) {
+    const dif = new Date(b).getTime() - new Date(a).getTime();
+
+    const Seconds_from_T1_to_T2 = dif / 1000;
+    const Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
+
+    return secondsToHms(Seconds_Between_Dates);
+}
+
+function secondsToHms(d) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
+}
+
 
 /**
  * Страница регистрации.
@@ -34,12 +52,14 @@ export const Admin = () => {
     }, []);
 
     return (
-        <Container>
+        <Container className="admin-page">
+            <Header as='h1'>Список сессий</Header>
             <Table celled padded>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell singleLine>Имя</Table.HeaderCell>
                         <Table.HeaderCell>Сессия началась</Table.HeaderCell>
+                        <Table.HeaderCell>Сессия закончилась</Table.HeaderCell>
                         <Table.HeaderCell>Решённых задач</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -53,13 +73,14 @@ export const Admin = () => {
                                         {session.name}
                                     </Table.Cell>
                                     <Table.Cell singleLine>{getFormattedDateTime(session.started)}</Table.Cell>
+                                    <Table.Cell singleLine></Table.Cell>
                                     <Table.Cell>
-                                        <Rating icon='star' defaultRating={session.solvedTasks.length} />
+                                        {session.solvedTasks.map((task) => <Icon color='yellow' key={task.id} name="star" />)}
                                         <List bulleted>
                                             {
                                                 session.solvedTasks.map((task) => {
                                                     return (
-                                                        <List.Item key={task.solvedNumber}>Задача {task.solvedNumber} решена {getFormattedDateTime(task.solvedTime)}</List.Item>
+                                                        <List.Item key={task.solvedNumber}>Задача {task.solvedNumber} решена {getFormattedDateTime(task.solvedTime)} ({getDifferenceInSeconds(session.started, task.solvedTime)})</List.Item>
                                                     );
                                                 })
                                             }

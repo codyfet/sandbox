@@ -52,12 +52,14 @@ export const Session = () => {
     const task = appState.session.tasks[currentTaskIndex];
     const currentTaskSolved = appState.passedTests.length === task.testsCount;
 
-    if (currentTaskSolved) {
-        putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1})
-            .then((data) => {
-                console.log(data);
-            });
-    }
+    useEffect(() => {
+        if (currentTaskSolved) {
+            putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1})
+                .then((data) => {
+                    console.log(data);
+                });
+        }
+    }, [appState.passedTests.length]);
 
     // Логика таймера
     const minutes = Math.floor(appState.session.remainedTime / 60);

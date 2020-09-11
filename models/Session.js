@@ -1,7 +1,7 @@
 const {Schema, model} = require("mongoose");
 
 /**
- * Модель Жанр.
+ * Модель Задача.
  */
 const Task = new Schema({
     solvedNumber: {type: Number},

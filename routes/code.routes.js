@@ -1,8 +1,6 @@
 const {Router} = require("express");
 // const Record = require("../models/Record");
-const Session = require("../models/Session");
 const Code = require("../models/Code");
-const Task = require("../models/Task");
 
 const router = new Router();
 
@@ -21,41 +19,22 @@ function makeid(length) {
     return result;
 }
 
-// /api/session/create
+// /api/code/create
 router.post(
     "/create",
     async (req, res) => {
         try {
+            const codes = [];
 
-
-            /**
-             * Активируем одноразовый код.
-             */
-            const codes = await Code.find({code: req.body.code}).exec();
-
-            if (codes.length > 0) {
-                codes[0].isActive = false;
-                codes[0].save();
-            } else {
-                return res.status(400).json({message: "Код неактивный"});
+            for (let i = 0; i < 500; i++) {
+                codes.push(new Code({code: makeid(5), isActive: true}))
             }
 
-            /**
-             * Создаем сессию.
-             */
-            const session = new Session({
-                name: req.body.name,
-                started: req.body.started,
-                solvedTasks: []
-            });
-            const result = await session.save();
+            Code.insertMany(codes, (err, docs) => {
 
-            const tasks = await Task.find({id: 1}).exec();
-
-            res.status(201).json({
-                _id: result._id,
-                task: tasks[0]
             });
+
+            res.status(201).json("Данные успешно созданы");
         } catch (error) {
             console.log('Error:', error.message);
 
@@ -64,30 +43,30 @@ router.post(
     }
 );
 
-router.put(
-    "/:id/update",
-    async (req, res) => {
-        try {
-            const sessions = await Session.find({_id: req.params.id}).exec();
-            const sessionItem = sessions[0];
-            const index = sessionItem.solvedTasks.findIndex((task) => req.body.solvedNumber === task.solvedNumber);
+// router.put(
+//     "/:id/update",
+//     async (req, res) => {
+//         try {
+//             const sessions = await Session.find({_id: req.params.id}).exec();
+//             const sessionItem = sessions[0];
+//             const index = sessionItem.solvedTasks.findIndex((task) => req.body.solvedNumber === task.solvedNumber);
 
-            if (index === -1) {
-                sessionItem.solvedTasks.push(req.body);
-            } else {
-                sessionItem.solvedTasks[index] = req.body;
-            }
+//             if (index === -1) {
+//                 sessionItem.solvedTasks.push(req.body);
+//             } else {
+//                 sessionItem.solvedTasks[index] = req.body;
+//             }
 
-            sessionItem.save();
+//             sessionItem.save();
 
-            res.status(201).json(sessions);
-        } catch (error) {
-            console.log('Error:', error.message);
+//             res.status(201).json(sessions);
+//         } catch (error) {
+//             console.log('Error:', error.message);
 
-            res.status(500).json({message: "Что-то пошло не так, попробуйте снова"})
-        }
-    }
-);
+//             res.status(500).json({message: "Что-то пошло не так, попробуйте снова"})
+//         }
+//     }
+// );
 
 // /api/record/:id/update
 // router.put(
