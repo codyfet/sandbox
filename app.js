@@ -1,5 +1,4 @@
 const express = require("express");
-const config = require("config");
 const mongoose = require("mongoose");
 
 const app = express();
@@ -11,11 +10,11 @@ app.use("/api/record", require("./routes/record.routes"));
 app.use("/api/session", require("./routes/session.routes"));
 app.use("/api/stat", require("./routes/stat.routes"));
 
-const PORT = config.get("port") || 5000;
+const PORT = 5000;
 
 async function start() {
     try {
-        await mongoose.connect(config.get("mongoUri"), {
+        await mongoose.connect("mongodb://admin:.gb.gb30@ds129904.mlab.com:29904/conference"), {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true
