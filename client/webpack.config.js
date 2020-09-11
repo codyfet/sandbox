@@ -121,6 +121,10 @@ module.exports = {
                 test: /\.(png|jpg|svg|gif)$/,
                 use: ["file-loader"]
             },
+            // {
+            //     test: /\.(jpe?g|png|gif|svg)$/i,
+            //     loader: "file-loader?name=/public/icons/[name].[ext]"
+            // }
             {
                 test: /\.(ttf|woff|woff2|eot)$/,
                 use: ["file-loader"]
