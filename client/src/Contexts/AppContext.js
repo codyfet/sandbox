@@ -8,8 +8,8 @@ const appInitialState = {
     session: {
         id: null,
         task: null,
-        // remainedTime: 60 * 10,
-        remainedTime: 10,
+        remainedTime: 60 * 10,
+        // remainedTime: 10,
         /**
          * id
          * description
