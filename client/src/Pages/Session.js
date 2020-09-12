@@ -32,20 +32,20 @@ export const Session = () => {
     mocha.setup("bdd");
     mocha._cleanReferencesAfterRun = false;
 
-    // useEffect(() => {
-    //     if (!appState.session.remainedTime) {
-    //         return;
-    //     }
+    useEffect(() => {
+        if (!appState.session.remainedTime) {
+            return;
+        }
 
-    //     const intervalId = setInterval(() => {
-    //         dispatch({
-    //             type: "CHANGE_REMAINED",
-    //             payload: appState.session.remainedTime - 1
-    //         });
-    //     }, 1000);
+        const intervalId = setInterval(() => {
+            dispatch({
+                type: "CHANGE_REMAINED",
+                payload: appState.session.remainedTime - 1
+            });
+        }, 1000);
 
-    //     return () => clearInterval(intervalId);
-    // }, [appState.session.remainedTime, dispatch]);
+        return () => clearInterval(intervalId);
+    }, [appState.session.remainedTime, dispatch]);
 
     // Логика вычисления текущей задачи.
     const currentTaskIndex = appState.session.tasks.findIndex((item) => item.isCurrent);
