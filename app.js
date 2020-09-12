@@ -5,6 +5,10 @@ const app = express();
 
 app.use(express.json({extended: true, limit: '50mb'}));
 app.use(express.static(__dirname + '/public'));
+const path = require('path');
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
 app.use("/api/session", require("./routes/session.routes"));
 app.use("/api/code", require("./routes/code.routes"));
