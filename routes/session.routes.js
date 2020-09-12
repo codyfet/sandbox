@@ -68,14 +68,22 @@ router.put(
     "/:id/update",
     async (req, res) => {
         try {
+
+            console.log(req.params.id);
+
             const sessions = await Session.find({_id: req.params.id}).exec();
             const sessionItem = sessions[0];
-            const index = sessionItem.solvedTasks.findIndex((task) => req.body.solvedNumber === task.solvedNumber);
 
-            if (index === -1) {
-                sessionItem.solvedTasks.push(req.body);
-            } else {
-                sessionItem.solvedTasks[index] = req.body;
+            if (req.body.solvedNumber) {
+                const index = sessionItem.solvedTasks.findIndex((task) => req.body.solvedNumber === task.solvedNumber);
+
+                if (index === -1) {
+                    sessionItem.solvedTasks.push(req.body);
+                } else {
+                    sessionItem.solvedTasks[index] = req.body;
+                }
+            } else if (req.body.finished) {
+                sessionItem.finished = req.body.finished;
             }
 
             sessionItem.save();

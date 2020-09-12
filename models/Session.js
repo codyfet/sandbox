@@ -11,6 +11,7 @@ const Task = new Schema({
 const schema = new Schema({
     name: {type: String, required: true},
     started: {type: Date, required: true},
+    finished: {type: Date},
     solvedTasks: [Task]
 });
 

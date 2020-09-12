@@ -32,20 +32,20 @@ export const Session = () => {
     mocha.setup("bdd");
     mocha._cleanReferencesAfterRun = false;
 
-    useEffect(() => {
-        if (!appState.session.remainedTime) {
-            return;
-        }
+    // useEffect(() => {
+    //     if (!appState.session.remainedTime) {
+    //         return;
+    //     }
 
-        const intervalId = setInterval(() => {
-            dispatch({
-                type: "CHANGE_REMAINED",
-                payload: appState.session.remainedTime - 1
-            });
-        }, 1000);
+    //     const intervalId = setInterval(() => {
+    //         dispatch({
+    //             type: "CHANGE_REMAINED",
+    //             payload: appState.session.remainedTime - 1
+    //         });
+    //     }, 1000);
 
-        return () => clearInterval(intervalId);
-    }, [appState.session.remainedTime, dispatch]);
+    //     return () => clearInterval(intervalId);
+    // }, [appState.session.remainedTime, dispatch]);
 
     // Логика вычисления текущей задачи.
     const currentTaskIndex = appState.session.tasks.findIndex((item) => item.isCurrent);
@@ -54,6 +54,8 @@ export const Session = () => {
 
     useEffect(() => {
         if (currentTaskSolved) {
+            console.log("d фиксируем результат в бд appState.session.id");
+            console.log(appState.session.id);
             putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1})
                 .then((data) => {
                     console.log(data);
@@ -111,7 +113,6 @@ export const Session = () => {
             setError(error.message);
         }
 
-
         mocha
           .run()
           .on("fail", (test) => {
@@ -141,6 +142,18 @@ export const Session = () => {
             payload: currentTaskIndex + 1
         });
     }, [dispatch, currentTaskIndex]);
+
+    /**
+     * Фикрсируем результат в БД.
+     */
+    if (appState.session.remainedTime === 0) {
+        console.log("d фиксируем результат в бд appState.session.id");
+        console.log(appState.session.id);
+        putData(`/api/session/${appState.session.id}/update`, {finished: new Date()})
+        .then((data) => {
+            console.log(data);
+        });
+    }
 
     return (
         <Container className="session">
@@ -187,10 +200,10 @@ export const Session = () => {
                                         Результат выполнения тестов:
                                     </div>
                                     <div>
-                                        <Label className="passed" color='green' as='a'>
+                                        <Label className="passed" color='green' as='a' key="green">
                                             <Icon name='check' /> {appState.passedTests.length}
                                         </Label>
-                                        <Label className="failed" color='red' as='a'>
+                                        <Label className="failed" color='red' as='a' key="red">
                                             <Icon name='cancel' /> {appState.failedTests.length}
                                         </Label>
                                     </div>
@@ -206,7 +219,10 @@ export const Session = () => {
                                                             (item) => {
                                                                 return (
                                                                     <Table.Row key={item.title} negative>
-                                                                        <Table.Cell>{item.title}</Table.Cell>
+                                                                        <Table.Cell>
+                                                                            {item.title}
+                                                                            <div className="error-block">{item.err.name}: {item.err.message}</div>
+                                                                        </Table.Cell>
                                                                         <Table.Cell><Icon name='close' />Не пройден</Table.Cell>
                                                                     </Table.Row>
                                                                 );

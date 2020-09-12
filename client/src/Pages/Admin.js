@@ -73,7 +73,7 @@ export const Admin = () => {
                                         {session.name}
                                     </Table.Cell>
                                     <Table.Cell singleLine>{getFormattedDateTime(session.started)}</Table.Cell>
-                                    <Table.Cell singleLine></Table.Cell>
+                                    <Table.Cell singleLine>{session.finished ? getFormattedDateTime(session.finished) : "-"}</Table.Cell>
                                     <Table.Cell>
                                         {session.solvedTasks.map((task) => <Icon color='yellow' key={task.id} name="star" />)}
                                         <List bulleted>
