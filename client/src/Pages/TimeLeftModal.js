@@ -23,7 +23,7 @@ export const TimeLeftModal = () => {
             <Modal.Content image>
                 <Modal.Description>
                     {solvedCount > 3 && <Header>Отличный результат!</Header>}
-                    <p>Ты решил {solvedCount} задач.</p>
+                    <p>Задач решено: {solvedCount}</p>
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
