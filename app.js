@@ -10,7 +10,7 @@ app.use("/api/session", require("./routes/session.routes"));
 app.use("/api/code", require("./routes/code.routes"));
 app.use("/api/task", require("./routes/task.routes"));
 
-const PORT = 3000;
+const PORT = process.env.PORT || 5000;
 
 async function start() {
     try {
