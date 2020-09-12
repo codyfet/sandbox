@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Container, Header, Icon, List, Table} from "semantic-ui-react";
+import axios from "axios";
 
 function getFormattedDateTime(dateString) {
     const dt = new Date(dateString);
@@ -41,13 +42,17 @@ export const Admin = () => {
     const [sessions, setSessions] = useState(null);
 
     useEffect(() => {
-        async function fetchMyAPI() {
-            let response = await fetch("api/session");
-            response = await response.json();
-            setSessions(response);
-        }
+        // async function fetchMyAPI() {
+        //     let response = await fetch("api/session");
+        //     response = await response.json();
+        //     setSessions(response);
+        // }
 
-        fetchMyAPI();
+        // fetchMyAPI();
+
+        axios.get("/api/session").then((resp) => {
+            setSessions(resp.data);
+        });
 
     }, []);
 
