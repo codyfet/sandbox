@@ -6,7 +6,7 @@
 
 Для установки зависимостей
 ```
-npm install-deps
+npm install && cd client && npm install
 ```
 
 ## Запуск
@@ -15,3 +15,5 @@ npm install-deps
 ```
 npm run dev
 ```
+
+Для работы с БД необходимо настроить соединение путем передачи своего mongodb_url в файле app.js.
