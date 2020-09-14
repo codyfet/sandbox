@@ -1,5 +1,8 @@
 const {Schema, model} = require("mongoose");
 
+/**
+ * Модель Задача.
+ */
 const schema = new Schema({
     id: {type: Number, required: true},
     description: {type: String, required: true},

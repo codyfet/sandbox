@@ -1,9 +1,9 @@
 const {Schema, model} = require("mongoose");
 
+/**
+ * Модель Код.
+ */
 const schema = new Schema({
-    // name: {type: String, required: true},
-    // started: {type: Date, required: true},
-    // solvedTasks: [Task]
     code: String,
     isActive: Boolean
 });

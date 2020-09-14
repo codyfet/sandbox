@@ -1,5 +1,0 @@
-{
-    "port": 5000,
-    "mongoUri": "mongodb://admin:.gb.gb30@ds129904.mlab.com:29904/conference",
-    "jwtSecret": "codyfet tracked brilliant"
-}

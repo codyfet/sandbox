@@ -10,20 +10,6 @@ import {Admin} from "../Pages/Admin";
  * @param {boolean} isAutheticated Признак авторизации пользователя.
  */
 export const Routes = () => {
-    // const {user} = useSelector(state => state);
-    // const isAutheticated = user?.data;
-
-    // if (isAutheticated) {
-    //     return (
-    //         <Switch>
-    //             <Route path="/" exact component={Main} />
-    //             <Route path="/diary" component={Diary} />
-    //             <Route path="/profile" component={Profile} />
-    //             <Redirect to="/" />
-    //         </Switch>
-    //     );
-    // }
-
     return (
         <Switch>
             <Route path="/" exact component={Registration} />

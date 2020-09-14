@@ -4,11 +4,17 @@ import {AppContext} from "../Contexts/AppContext";
 import {getSolvedCount} from "../Utils/CommonUtils";
 import {useHistory} from "react-router-dom";
 
+/**
+ * Модалка с с количеством решенных задач по истечению времени.
+ */
 export const TimeLeftModal = () => {
     const {appState, dispatch} = useContext(AppContext);
     const solvedCount = getSolvedCount(appState);
     let history = useHistory();
 
+    /**
+     * Обработчик нажатия на кнопку "Выйти."
+     */
     const handleExitClick = () => {
         history.push("/");
 
@@ -34,4 +40,3 @@ export const TimeLeftModal = () => {
         </Modal>
     );
 };
-

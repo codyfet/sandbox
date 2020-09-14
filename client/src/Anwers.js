@@ -26,14 +26,14 @@ const Answers = [
 
         return res;
         `
-    }
+    },
     {
         id: 4,
         answer:
         `
         return arr.slice(1);
         `
-    }
+    },
     {
         id: 5,
         answer:
@@ -112,4 +112,4 @@ const Answers = [
     return index;
         `
     }
-]
+];

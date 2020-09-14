@@ -4,6 +4,9 @@ import {Button, Form, Input} from "semantic-ui-react";
 import {AppContext} from "../Contexts/AppContext";
 import axios from "axios";
 
+/**
+ * Логика выключения кнопки F5.
+ */
 // document.onkeydown = function (e) {
 //     if (e.keyCode === 116) {
 //         return false;
@@ -31,24 +34,6 @@ export const Registration = () => {
     };
 
     const handleLoginClick = () => {
-        // postData("/api/session/create", {name: appState.name, started: new Date(), code})
-        //     .then((data) => {
-
-        //             dispatch({
-        //                 type: "SAVE_SESSION_ID",
-        //                 payload: data._id
-        //             });
-
-        //             history.push("/session");
-        //         // }
-        //         //  else {
-        //         //     setMessage(error.message);
-        //         // }
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
-
         axios.post("/api/session/create", {name: appState.name, started: new Date(), code})
             .then((response) => {
                 dispatch({
@@ -57,7 +42,6 @@ export const Registration = () => {
                         sessionId: response.data._id,
                         task: response.data.task
                     }
-
                 });
 
                 history.push("/session");
