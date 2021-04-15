@@ -29,14 +29,14 @@ router.post(
             /**
              * Активируем одноразовый код.
              */
-            const codes = await Code.find({code: req.body.code}).exec();
+            // const codes = await Code.find({code: req.body.code}).exec();
 
-            if (codes.length > 0) {
-                codes[0].isActive = false;
-                codes[0].save();
-            } else {
-                return res.status(400).json({message: "Код неактивный"});
-            }
+            // if (codes.length > 0) {
+            //     codes[0].isActive = false;
+            //     codes[0].save();
+            // } else {
+            //     return res.status(400).json({message: "Код неактивный"});
+            // }
 
             /**
              * Создаем сессию.
@@ -66,9 +66,6 @@ router.put(
     "/:id/update",
     async (req, res) => {
         try {
-
-            console.log(req.params.id);
-
             const sessions = await Session.find({_id: req.params.id}).exec();
             const sessionItem = sessions[0];
 
