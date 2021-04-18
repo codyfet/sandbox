@@ -3,6 +3,7 @@ import {TASKS} from "../Tasks";
 
 const appInitialState = {
     name: "",
+    email: "",
     failedTests: [],
     passedTests: [],
     session: {
@@ -37,6 +38,12 @@ const reducer = (state, action) => {
         return {
             ...state,
             name: action.payload
+        };
+    }
+    if (action.type === "CHANGE_EMAIL") {
+        return {
+            ...state,
+            email: action.payload
         };
     }
     if (action.type === "CHANGE_REMAINED") {

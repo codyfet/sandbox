@@ -54,12 +54,10 @@ export const Session = () => {
 
     useEffect(() => {
         if (currentTaskSolved) {
-            console.log("d фиксируем результат в бд appState.session.id");
-            console.log(appState.session.id);
-            putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1})
-                .then((data) => {
-                    console.log(data);
-                });
+            putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1});
+                // .then((data) => {
+                //     console.log(data);
+                // });
         }
     }, [appState.passedTests.length]);
 
@@ -147,25 +145,26 @@ export const Session = () => {
      * Фикрсируем результат в БД.
      */
     if (appState.session.remainedTime === 0) {
-        console.log("d фиксируем результат в бд appState.session.id");
-        console.log(appState.session.id);
-        putData(`/api/session/${appState.session.id}/update`, {finished: new Date()})
-        .then((data) => {
-            console.log(data);
-        });
+        // console.log("d фиксируем результат в бд appState.session.id");
+        // console.log(appState.session.id);
+        putData(`/api/session/${appState.session.id}/update`, {finished: new Date()});
+        // .then((data) => {
+        //     console.log(data);
+        // });
     }
 
     return (
         <Container className="session">
             <div className="userinfo">
                 <div>
-                    {appState.name}
+                    <div>{appState.email}</div>
+                    <div>{appState.name}</div>
                 </div>
                 <div>
                     {finalTime}
                 </div>
             </div>
-            <h1>Задание {currentTaskIndex + 1}</h1>
+            <div className="text-title">Задание {currentTaskIndex + 1}</div>
             <Segment >
                 <Grid className="profile-data">
                     <Grid.Column className={"task-panel"} width={8}>

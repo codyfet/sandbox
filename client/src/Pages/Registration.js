@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {Button, Form, Input} from "semantic-ui-react";
+import {Button, Form, Input, Message} from "semantic-ui-react";
 import {AppContext} from "../Contexts/AppContext";
 import axios from "axios";
 
@@ -17,7 +17,6 @@ import axios from "axios";
  * Страница регистрации.
  */
 export const Registration = () => {
-    const [code, setCode] = useState("");
     const [errorMessage, setMessage] = useState(null);
     const {appState, dispatch} = useContext(AppContext);
     const history = useHistory();
@@ -29,12 +28,15 @@ export const Registration = () => {
         });
     };
 
-    const handleCodeChange = (e) => {
-        setCode(e.target.value);
+    const handleEmailChange = (e) => {
+        dispatch({
+            type: "CHANGE_EMAIL",
+            payload: e.target.value
+        });
     };
 
     const handleLoginClick = () => {
-        axios.post("/api/session/create", {name: appState.name, started: new Date(), code})
+        axios.post("/api/session/create", {name: appState.name, email: appState.email, started: new Date()})
             .then((response) => {
                 dispatch({
                     type: "SAVE_SESSION_ID",
@@ -47,7 +49,10 @@ export const Registration = () => {
                 history.push("/session");
             })
             .catch((error) => {
-                setMessage(error.message);
+                if (error.response.status === 401) {
+                    setMessage(error.response.data);
+                }
+                return error;
             });
     };
 
@@ -60,23 +65,34 @@ export const Registration = () => {
             <div className="registration-form">
                 <Form>
                     <Form.Field>
-                        <Input onChange={handleNameChange} value={appState.name} className="registration-form-name" placeholder='Твоё имя' />
+                        <Input
+                            onChange={handleEmailChange}
+                            value={appState.email}
+                            className="registration-form-email"
+                            placeholder='Твой email'
+                        />
                     </Form.Field>
-                    <Form.Field
-                        control={Input}
-                        placeholder='Код'
-                        onChange={handleCodeChange}
-                        value={code}
-                        error={errorMessage ? {
-                            content: "Код неактивный"
-                        } : null}
-                    />
+                    <Form.Field>
+                        <Input
+                            onChange={handleNameChange}
+                            value={appState.name}
+                            className="registration-form-name"
+                            placeholder='Твоё имя'
+
+                        />
+                    </Form.Field>
                 </Form>
 
                 <div className="registration-form-button">
                     <Button className="a-button" onClick={handleLoginClick}>Начать</Button>
                 </div>
             </div>
+            {errorMessage && (
+                <Message negative>
+                    <Message.Header>Ошибка</Message.Header>
+                    <p>{errorMessage}</p>
+                </Message>
+            )}
         </div>
     );
 };
