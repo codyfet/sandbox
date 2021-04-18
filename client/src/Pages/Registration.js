@@ -17,6 +17,7 @@ import axios from "axios";
  * Страница регистрации.
  */
 export const Registration = () => {
+    const [isLoading, setLoading] = useState(false);
     const [errorMessage, setMessage] = useState(null);
     const {appState, dispatch} = useContext(AppContext);
     const history = useHistory();
@@ -36,6 +37,7 @@ export const Registration = () => {
     };
 
     const handleLoginClick = () => {
+        setLoading(true);
         axios.post("/api/session/create", {name: appState.name, email: appState.email, started: new Date()})
             .then((response) => {
                 dispatch({
@@ -49,6 +51,7 @@ export const Registration = () => {
                 history.push("/session");
             })
             .catch((error) => {
+                setLoading(false);
                 if (error.response.status === 401) {
                     setMessage(error.response.data);
                 }
@@ -84,7 +87,7 @@ export const Registration = () => {
                 </Form>
 
                 <div className="registration-form-button">
-                    <Button className="a-button" onClick={handleLoginClick}>Начать</Button>
+                    <Button disabled={isLoading} loading={isLoading} className="a-button" onClick={handleLoginClick}>Начать</Button>
                 </div>
             </div>
             {errorMessage && (
