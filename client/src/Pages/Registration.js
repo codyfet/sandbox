@@ -59,7 +59,7 @@ export const Registration = () => {
     return (
         <div className="registration">
             <blockquote>
-                <p>Добро пожаловать в игру от компании <img className="acc-logo" src="Acc_Logo.PNG" />.</p>
+                <p>Добро пожаловать в игру от компании Accenture.</p>
                 <p>Твоя цель — решить как можно больше задач при помощи JavaScript за 10 минут.</p>
             </blockquote>
             <div className="registration-form">

@@ -166,7 +166,7 @@ export const Session = () => {
             </div>
             <div className="text-title">Задание {currentTaskIndex + 1}</div>
             <Segment >
-                <Grid className="profile-data">
+                <Grid stackable className="profile-data">
                     <Grid.Column className={"task-panel"} width={8}>
                         <div className="task">
                             {task.description}
