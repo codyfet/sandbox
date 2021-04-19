@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {Button, Form, Input, Message} from "semantic-ui-react";
+import {Button, Checkbox, Form, Input, Message} from "semantic-ui-react";
 import {AppContext} from "../Contexts/AppContext";
 import axios from "axios";
 
@@ -17,6 +17,7 @@ import axios from "axios";
  * Страница регистрации.
  */
 export const Registration = () => {
+    const [isAgreementChecked, setAgreementChecked] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [errorMessage, setMessage] = useState(null);
     const {appState, dispatch} = useContext(AppContext);
@@ -62,8 +63,10 @@ export const Registration = () => {
     return (
         <div className="registration">
             <blockquote>
-                <p>Добро пожаловать в игру от компании Accenture.</p>
-                <p>Твоя цель — решить как можно больше задач при помощи JavaScript за 10 минут.</p>
+                <p>Добро пожаловать в игру от компании Accenture. Твоя цель — решить как можно больше задач при помощи JavaScript за 10 минут.</p>
+                <p>Побеждает тот, кто решил максимальное количество задач за наименьшее время.</p>
+                <p>Результаты подводим каждый день конференции в 21:00.</p>
+                <p>Подарки всем участникам, лучшим - рюкзаки Xiaomi (пришлём почтой).</p>
             </blockquote>
             <div className="registration-form">
                 <Form>
@@ -87,8 +90,17 @@ export const Registration = () => {
                 </Form>
 
                 <div className="registration-form-button">
-                    <Button disabled={isLoading} loading={isLoading} className="a-button" onClick={handleLoginClick}>Начать</Button>
+                    <Button disabled={!appState.email || !isAgreementChecked || isLoading} loading={isLoading} className="a-button" onClick={handleLoginClick}>Начать</Button>
                 </div>
+            </div>
+            <div className="checkbox-agreement-wrapper">
+                <Checkbox
+                    onChange={(e, data) => {
+                        setAgreementChecked(data.checked);
+                    }}
+                    checked={isAgreementChecked}
+                    label='Подтверждаю использование моих персональных данных в целях проведения конкурса и награждения призами.'
+                />
             </div>
             {errorMessage && (
                 <Message negative>
