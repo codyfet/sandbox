@@ -40,7 +40,7 @@ router.post(
 
             const user = await Session.findOne({'email': req.body.email});
 
-            if (user && user.email === req.body.email || user.ip === req.body.ip) {
+            if (user && (user.email === req.body.email || user.ip === req.ip)) {
                 res.status(401).send("Вы можете поучаствовать в игре только один раз.")
             } else {
                 /**

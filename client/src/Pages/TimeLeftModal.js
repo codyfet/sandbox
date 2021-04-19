@@ -30,6 +30,7 @@ export const TimeLeftModal = () => {
                 <Modal.Description>
                     {solvedCount > 3 && <Header>Отличный результат!</Header>}
                     <p>Задач решено: {solvedCount}</p>
+                    <p>В случае победы мы напишем тебе по адресу: {appState.email}</p>
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>

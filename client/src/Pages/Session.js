@@ -13,6 +13,7 @@ import "codemirror/theme/monokai.css";
 import {putData} from "../Utils/RequestUtils";
 // eslint-disable-next-line no-unused-vars
 const assert = require("assert");
+import AccLogo from "../Assets/Acc_Logo.png";
 
 /**
  * Настройки CodeMirror.
@@ -55,9 +56,6 @@ export const Session = () => {
     useEffect(() => {
         if (currentTaskSolved) {
             putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1});
-                // .then((data) => {
-                //     console.log(data);
-                // });
         }
     }, [appState.passedTests.length]);
 
@@ -145,16 +143,14 @@ export const Session = () => {
      * Фикрсируем результат в БД.
      */
     if (appState.session.remainedTime === 0) {
-        // console.log("d фиксируем результат в бд appState.session.id");
-        // console.log(appState.session.id);
         putData(`/api/session/${appState.session.id}/update`, {finished: new Date()});
-        // .then((data) => {
-        //     console.log(data);
-        // });
     }
 
     return (
         <Container className="session">
+            <div className="accenture-logo-wrapper">
+                <img src={AccLogo} alt=""/>
+            </div>
             <div className="userinfo">
                 <div>
                     <div>{appState.email}</div>
