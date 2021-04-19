@@ -38,22 +38,30 @@ router.post(
             //     return res.status(400).json({message: "Код неактивный"});
             // }
 
-            /**
-             * Создаем сессию.
-             */
-            const session = new Session({
-                name: req.body.name,
-                started: req.body.started,
-                solvedTasks: []
-            });
-            const result = await session.save();
+            const user = await Session.findOne({'email': req.body.email});
 
-            const tasks = await Task.find({id: 1}).exec();
+            if (user && (user.email === req.body.email || user.ip === req.ip)) {
+                res.status(401).send("Вы можете поучаствовать в игре только один раз.")
+            } else {
+                /**
+                 * Создаем сессию.
+                 */
+                const session = new Session({
+                    name: req.body.name,
+                    email: req.body.email,
+                    ip: req.ip,
+                    started: req.body.started,
+                    solvedTasks: []
+                });
+                const result = await session.save();
 
-            res.status(201).json({
-                _id: result._id,
-                task: tasks[0]
-            });
+                const tasks = await Task.find({id: 1}).exec();
+
+                res.status(201).json({
+                    _id: result._id,
+                    task: tasks[0]
+                });
+            }
         } catch (error) {
             console.log('Error:', error.message);
 

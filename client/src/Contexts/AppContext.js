@@ -1,34 +1,37 @@
 import React, {useReducer} from "react";
 import {TASKS} from "../Tasks";
 
-const appInitialState = {
-    name: "",
-    failedTests: [],
-    passedTests: [],
-    session: {
-        id: null,
-        task: null,
-        remainedTime: 60 * 10,
-        // remainedTime: 10,
-        /**
-         * id
-         * description
-         * preCode
-         * codeReturn
-         * testExpression
-         * testResult
-         * test
-         *
-         * solved: false
-         * isCurrent: false
-         */
-        tasks: TASKS.map((item, index) => ({
-            ...item,
-            solved: false,
-            isCurrent: index === 0 ? true : false
-        }))
-    }
-};
+function getAppInitialState() {
+    return {
+        name: "",
+        email: "",
+        failedTests: [],
+        passedTests: [],
+        session: {
+            id: null,
+            task: null,
+            remainedTime: 60 * 10,
+            // remainedTime: 10,
+            /**
+             * id
+             * description
+             * preCode
+             * codeReturn
+             * testExpression
+             * testResult
+             * test
+             *
+             * solved: false
+             * isCurrent: false
+             */
+            tasks: TASKS.map((item, index) => ({
+                ...item,
+                solved: false,
+                isCurrent: index === 0 ? true : false
+            }))
+        }
+    };
+}
 
 const AppContext = React.createContext();
 
@@ -37,6 +40,12 @@ const reducer = (state, action) => {
         return {
             ...state,
             name: action.payload
+        };
+    }
+    if (action.type === "CHANGE_EMAIL") {
+        return {
+            ...state,
+            email: action.payload
         };
     }
     if (action.type === "CHANGE_REMAINED") {
@@ -64,7 +73,7 @@ const reducer = (state, action) => {
         };
     }
     if (action.type === "REFRESH_SESSION") {
-        return appInitialState;
+        return getAppInitialState();
     }
     if (action.type === "ADD_FAILED_TEST") {
         const updateFailedTests = [...state.failedTests, action.payload];
@@ -113,7 +122,7 @@ const reducer = (state, action) => {
 };
 
 const AppProvider = (props) => {
-    const [appState, dispatch] = useReducer(reducer, appInitialState);
+    const [appState, dispatch] = useReducer(reducer, getAppInitialState());
 
     return (
         <AppContext.Provider value={{appState, dispatch}}>

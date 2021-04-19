@@ -38,7 +38,8 @@ export const Admin = () => {
                             <>
                                 <Table.Row key={session._id}>
                                     <Table.Cell>
-                                        {session.name}
+                                        <div>{session.name}</div>
+                                        <div>{session.email}</div>
                                     </Table.Cell>
                                     <Table.Cell singleLine>{getFormattedDateTime(session.started)}</Table.Cell>
                                     <Table.Cell singleLine>{session.finished ? getFormattedDateTime(session.finished) : "-"}</Table.Cell>

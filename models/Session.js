@@ -10,6 +10,8 @@ const Task = new Schema({
 
 const schema = new Schema({
     name: {type: String, required: true},
+    email: {type: String, required: true},
+    ip: {type: String},
     started: {type: Date, required: true},
     finished: {type: Date},
     solvedTasks: [Task]

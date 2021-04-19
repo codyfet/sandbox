@@ -1,8 +1,9 @@
 import React, {useContext, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {Button, Form, Input} from "semantic-ui-react";
+import {Button, Checkbox, Form, Input, Message} from "semantic-ui-react";
 import {AppContext} from "../Contexts/AppContext";
 import axios from "axios";
+import AccLogo from "../Assets/Acc_Logo.png";
 
 /**
  * Логика выключения кнопки F5.
@@ -17,7 +18,8 @@ import axios from "axios";
  * Страница регистрации.
  */
 export const Registration = () => {
-    const [code, setCode] = useState("");
+    const [isAgreementChecked, setAgreementChecked] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [errorMessage, setMessage] = useState(null);
     const {appState, dispatch} = useContext(AppContext);
     const history = useHistory();
@@ -29,12 +31,16 @@ export const Registration = () => {
         });
     };
 
-    const handleCodeChange = (e) => {
-        setCode(e.target.value);
+    const handleEmailChange = (e) => {
+        dispatch({
+            type: "CHANGE_EMAIL",
+            payload: e.target.value
+        });
     };
 
     const handleLoginClick = () => {
-        axios.post("/api/session/create", {name: appState.name, started: new Date(), code})
+        setLoading(true);
+        axios.post("/api/session/create", {name: appState.name, email: appState.email, started: new Date()})
             .then((response) => {
                 dispatch({
                     type: "SAVE_SESSION_ID",
@@ -47,36 +53,67 @@ export const Registration = () => {
                 history.push("/session");
             })
             .catch((error) => {
-                setMessage(error.message);
+                setLoading(false);
+                if (error.response.status === 401) {
+                    setMessage(error.response.data);
+                }
+                return error;
             });
     };
 
     return (
-        <div className="registration">
-            <blockquote>
-                <p>Добро пожаловать в игру от компании <img className="acc-logo" src="Acc_Logo.PNG" />.</p>
-                <p>Твоя цель — решить как можно больше задач при помощи JavaScript за 10 минут.</p>
-            </blockquote>
-            <div className="registration-form">
-                <Form>
-                    <Form.Field>
-                        <Input onChange={handleNameChange} value={appState.name} className="registration-form-name" placeholder='Твоё имя' />
-                    </Form.Field>
-                    <Form.Field
-                        control={Input}
-                        placeholder='Код'
-                        onChange={handleCodeChange}
-                        value={code}
-                        error={errorMessage ? {
-                            content: "Код неактивный"
-                        } : null}
-                    />
-                </Form>
-
-                <div className="registration-form-button">
-                    <Button className="a-button" onClick={handleLoginClick}>Начать</Button>
-                </div>
+        <>
+            <div className="accenture-logo-wrapper">
+                <img src={AccLogo} alt=""/>
             </div>
-        </div>
+            <div className="registration">
+                <blockquote>
+                    <p>Добро пожаловать в игру от компании Accenture. Твоя цель — решить как можно больше задач при помощи JavaScript за 10 минут.</p>
+                    <p>Побеждает тот, кто решил максимальное количество задач за наименьшее время.</p>
+                    <p>Результаты подводим каждый день конференции в 21:00.</p>
+                    <p>Подарки всем участникам, лучшим - рюкзаки Xiaomi (пришлём почтой).</p>
+                </blockquote>
+                <div className="registration-form">
+                    <Form>
+                        <Form.Field>
+                            <Input
+                                onChange={handleEmailChange}
+                                value={appState.email}
+                                className="registration-form-email"
+                                placeholder='Твой email'
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <Input
+                                onChange={handleNameChange}
+                                value={appState.name}
+                                className="registration-form-name"
+                                placeholder='Твоё имя'
+
+                            />
+                        </Form.Field>
+                    </Form>
+
+                    <div className="registration-form-button">
+                        <Button disabled={!appState.email || !isAgreementChecked || isLoading} loading={isLoading} className="a-button" onClick={handleLoginClick}>Начать</Button>
+                    </div>
+                </div>
+                <div className="checkbox-agreement-wrapper">
+                    <Checkbox
+                        onChange={(e, data) => {
+                            setAgreementChecked(data.checked);
+                        }}
+                        checked={isAgreementChecked}
+                        label='Подтверждаю использование моих персональных данных в целях проведения конкурса и награждения призами.'
+                    />
+                </div>
+                {errorMessage && (
+                    <Message negative>
+                        <Message.Header>Ошибка</Message.Header>
+                        <p>{errorMessage}</p>
+                    </Message>
+                )}
+            </div>
+        </>
     );
 };

@@ -13,6 +13,7 @@ import "codemirror/theme/monokai.css";
 import {putData} from "../Utils/RequestUtils";
 // eslint-disable-next-line no-unused-vars
 const assert = require("assert");
+import AccLogo from "../Assets/Acc_Logo.png";
 
 /**
  * Настройки CodeMirror.
@@ -54,12 +55,7 @@ export const Session = () => {
 
     useEffect(() => {
         if (currentTaskSolved) {
-            console.log("d фиксируем результат в бд appState.session.id");
-            console.log(appState.session.id);
-            putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1})
-                .then((data) => {
-                    console.log(data);
-                });
+            putData(`/api/session/${appState.session.id}/update`, {solvedTime: new Date(), solvedNumber: currentTaskIndex + 1});
         }
     }, [appState.passedTests.length]);
 
@@ -147,27 +143,26 @@ export const Session = () => {
      * Фикрсируем результат в БД.
      */
     if (appState.session.remainedTime === 0) {
-        console.log("d фиксируем результат в бд appState.session.id");
-        console.log(appState.session.id);
-        putData(`/api/session/${appState.session.id}/update`, {finished: new Date()})
-        .then((data) => {
-            console.log(data);
-        });
+        putData(`/api/session/${appState.session.id}/update`, {finished: new Date()});
     }
 
     return (
         <Container className="session">
+            <div className="accenture-logo-wrapper">
+                <img src={AccLogo} alt=""/>
+            </div>
             <div className="userinfo">
                 <div>
-                    {appState.name}
+                    <div>{appState.email}</div>
+                    <div>{appState.name}</div>
                 </div>
                 <div>
                     {finalTime}
                 </div>
             </div>
-            <h1>Задание {currentTaskIndex + 1}</h1>
+            <div className="text-title">Задание {currentTaskIndex + 1}</div>
             <Segment >
-                <Grid className="profile-data">
+                <Grid stackable className="profile-data">
                     <Grid.Column className={"task-panel"} width={8}>
                         <div className="task">
                             {task.description}
