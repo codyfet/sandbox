@@ -1,27 +1,39 @@
 import React, {useEffect, useState} from "react";
-import {Container, Header, Icon, List, Table} from "semantic-ui-react";
-import {getDifferenceInSeconds, getFormattedDateTime} from "../Utils/DateUtils";
+import {Container, Header, Icon, List, Select, Table} from "semantic-ui-react";
+import {formattedDate, getDifferenceInSeconds, getFormattedDateTime} from "../Utils/DateUtils";
+
+const options = [
+    {key: "20.04.2021", value: "20.04.2021", text: "20.04.2021"},
+    {key: "21.04.2021", value: "21.04.2021", text: "21.04.2021"},
+    {key: "22.04.2021", value: "22.04.2021", text: "22.04.2021"},
+    {key: "23.04.2021", value: "23.04.2021", text: "23.04.2021"},
+];
 
 /**
  * Страница с выводом результатов.
  */
 export const Admin = () => {
     const [sessions, setSessions] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(formattedDate());
+
+    async function fetchSessions(date) {
+        let response = await fetch(`api/session?date=${date}`);
+        response = await response.json();
+        setSessions(response);
+    }
 
     useEffect(() => {
-        async function fetchMyAPI() {
-            let response = await fetch("api/session");
-            response = await response.json();
-            setSessions(response);
-        }
-
-        fetchMyAPI();
-
+        fetchSessions(selectedDate);
     }, []);
+
+    useEffect(() => {
+        fetchSessions(selectedDate);
+    }, [selectedDate]);
 
     return (
         <Container className="admin-page">
             <Header as='h1'>Список сессий</Header>
+            <div className="date-select">Дата <Select placeholder='Выберите дату' options={options} value={selectedDate} onChange={(e, data) => {setSelectedDate(data.value);}}/></div>
             <Table celled padded>
                 <Table.Header>
                     <Table.Row>

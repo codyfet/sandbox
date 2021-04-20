@@ -104,8 +104,16 @@ router.put(
 router.get(
     "/",
     async (req, res) => {
+        const [day, month, year] = req.query.date.split(".");
+
         try {
-            Session.find({}).sort({started: 'desc'}).exec(function(err, sessions) {
+            Session.find({
+                started: {
+                    $gte: new Date(+year, +month-1, +day),
+                    $lt: new Date(+year, +month-1, +day+1)
+                }
+                // {"started": {"$gte": new Date(2021, 3, 20),"$lt": new Date(2021, 3, 21)}}
+            }).sort({started: 'desc'}).exec(function(err, sessions) {
                 if (!err) {
                     res.status(201).json(sessions);
                 }
