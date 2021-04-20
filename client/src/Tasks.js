@@ -108,8 +108,23 @@ export const TASKS = [
 
             assert.ok(arraysEqual(removeFirstElement(["first", "second", "third"]), ["second", "third"]));
           });
+
+          it('при arr = ["1", "2", "3"], результат должен быть ["2", "3"]' , function() {
+            function arraysEqual(a, b) {
+                if (a === b) return true;
+                if (a == null || b == null) return false;
+                if (a.length !== b.length) return false;
+
+                for (var i = 0; i < a.length; ++i) {
+                  if (a[i] !== b[i]) return false;
+                }
+                return true;
+              }
+
+            assert.ok(arraysEqual(removeFirstElement(["1", "2", "3"]), ["2", "3"]));
+          });
       });`,
-    testsCount: 1,
+    testsCount: 2,
     answer:
     `
     return arr.slice(1);
@@ -139,7 +154,6 @@ export const TASKS = [
     testsCount: 3,
 
   },
-
 
   {
     id: 6,

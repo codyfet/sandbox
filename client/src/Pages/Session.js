@@ -3,7 +3,7 @@ import {Button, Container, Grid, Icon, Label, Segment, Table} from "semantic-ui-
 import {str_pad_left} from "../Utils/TimeUtils";
 import {AppContext} from "../Contexts/AppContext";
 import {TimeLeftModal} from "./TimeLeftModal";
-import {getSolvedCount} from "../Utils/CommonUtils";
+import {getSolvedCount, isEmpty} from "../Utils/CommonUtils";
 import mocha from "mocha/mocha";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/mode/markdown/markdown";
@@ -14,6 +14,7 @@ import {putData} from "../Utils/RequestUtils";
 // eslint-disable-next-line no-unused-vars
 const assert = require("assert");
 import AccLogo from "../Assets/Acc_Logo.png";
+import {AllTasksSolvedModal} from "./AllTasksSolvedModal";
 
 /**
  * Настройки CodeMirror.
@@ -50,7 +51,7 @@ export const Session = () => {
 
     // Логика вычисления текущей задачи.
     const currentTaskIndex = appState.session.tasks.findIndex((item) => item.isCurrent);
-    const task = appState.session.tasks[currentTaskIndex];
+    const task = appState.session.tasks[currentTaskIndex] || {};
     const currentTaskSolved = appState.passedTests.length === task.testsCount;
 
     useEffect(() => {
@@ -237,6 +238,7 @@ export const Session = () => {
             </Segment>
             <div className="badges">{badges}</div>
             {appState.session.remainedTime === 0 && <TimeLeftModal />}
+            {isEmpty(task) && <AllTasksSolvedModal />}
         </Container>
     );
 };

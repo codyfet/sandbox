@@ -4,6 +4,7 @@ import {Button, Checkbox, Form, Input, Message} from "semantic-ui-react";
 import {AppContext} from "../Contexts/AppContext";
 import axios from "axios";
 import AccLogo from "../Assets/Acc_Logo.png";
+import {validateEmail} from "../Utils/CommonUtils";
 
 /**
  * Логика выключения кнопки F5.
@@ -18,6 +19,7 @@ import AccLogo from "../Assets/Acc_Logo.png";
  * Страница регистрации.
  */
 export const Registration = () => {
+    const [isValidEmail, setIsValidEmail] = useState(false);
     const [isAgreementChecked, setAgreementChecked] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [errorMessage, setMessage] = useState(null);
@@ -78,6 +80,16 @@ export const Registration = () => {
                         <Form.Field>
                             <Input
                                 onChange={handleEmailChange}
+                                onBlur={(e) => {
+                                    const isValidaEmailAfterBlur = validateEmail(e.target.value);
+                                    setIsValidEmail(isValidaEmailAfterBlur);
+
+                                    if (!isValidaEmailAfterBlur) {
+                                        setMessage("Email введён некорректно.");
+                                    } else {
+                                        setMessage(null);
+                                    }
+                                }}
                                 value={appState.email}
                                 className="registration-form-email"
                                 placeholder='Твой email'
@@ -95,7 +107,14 @@ export const Registration = () => {
                     </Form>
 
                     <div className="registration-form-button">
-                        <Button disabled={!appState.email || !isAgreementChecked || isLoading} loading={isLoading} className="a-button" onClick={handleLoginClick}>Начать</Button>
+                        <Button
+                            disabled={!isValidEmail || !appState.email || !isAgreementChecked || isLoading}
+                            loading={isLoading}
+                            className="a-button"
+                            onClick={handleLoginClick}
+                        >
+                            Начать
+                        </Button>
                     </div>
                 </div>
                 <div className="checkbox-agreement-wrapper">
