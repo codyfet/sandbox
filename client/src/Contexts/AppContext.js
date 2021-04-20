@@ -60,7 +60,10 @@ const reducer = (state, action) => {
     if (action.type === "CHANGE_TASK_INDEX") {
         const updatedTasks = [...state.session.tasks];
         updatedTasks[action.payload - 1].isCurrent = false;
-        updatedTasks[action.payload].isCurrent = true;
+
+        if (action.payload < updatedTasks.length) {
+            updatedTasks[action.payload].isCurrent = true;
+        }
 
         return {
             ...state,
