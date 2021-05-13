@@ -111,5 +111,22 @@ const Answers = [
 
     return index;
         `
+    },
+    {
+        id: 12,
+        answer:
+        `
+        let res = "";
+        const strArray = value.toString().split("");
+
+        strArray.forEach((v, index) => {
+          res += v;
+
+          if (+v % 2 === 0 && +strArray[index+1] % 2 === 0) {
+          res += "-";
+          }
+        })
+        return res;
+        `
     }
 ];

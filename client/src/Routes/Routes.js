@@ -12,7 +12,7 @@ import {Admin} from "../Pages/Admin";
 export const Routes = () => {
     return (
         <Switch>
-            <Route path="/" exact component={Admin} />
+            <Route path="/" exact component={Registration} />
             <Route path="/session" component={Session} />
             <Route path="/admin" component={Admin} />
             <Redirect to="/" />

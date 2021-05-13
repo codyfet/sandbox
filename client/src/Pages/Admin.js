@@ -1,20 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Container, Header, Icon, List, Select, Table} from "semantic-ui-react";
+import {Container, Header, Icon, List, Table} from "semantic-ui-react";
 import {formattedDate, getDifferenceInSeconds, getFormattedDateTime} from "../Utils/DateUtils";
+import DatePicker from "react-date-picker";
 
-const options = [
-    {key: "20.04.2021", value: "20.04.2021", text: "20.04.2021"},
-    {key: "21.04.2021", value: "21.04.2021", text: "21.04.2021"},
-    {key: "22.04.2021", value: "22.04.2021", text: "22.04.2021"},
-    {key: "23.04.2021", value: "23.04.2021", text: "23.04.2021"},
-];
 
 /**
  * Страница с выводом результатов.
  */
 export const Admin = () => {
     const [sessions, setSessions] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(formattedDate());
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     async function fetchSessions(date) {
         let response = await fetch(`api/session?date=${date}`);
@@ -23,17 +18,27 @@ export const Admin = () => {
     }
 
     useEffect(() => {
-        fetchSessions(selectedDate);
+        fetchSessions(formattedDate(selectedDate));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        fetchSessions(selectedDate);
+        fetchSessions(formattedDate(selectedDate));
     }, [selectedDate]);
 
     return (
         <Container className="admin-page">
             <Header as='h1'>Список сессий</Header>
-            <div className="date-select">Дата <Select placeholder='Выберите дату' options={options} value={selectedDate} onChange={(e, data) => {setSelectedDate(data.value);}}/></div>
+            <p>
+                <DatePicker
+                    onChange={(value) => {
+                        setSelectedDate(value);
+                    }}
+                    clearIcon={null}
+                    value={selectedDate}
+                    format="dd.MM.y"
+                />
+            </p>
             <Table celled padded>
                 <Table.Header>
                     <Table.Row>
