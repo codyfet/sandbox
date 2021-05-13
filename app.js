@@ -1,15 +1,20 @@
 require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 
 const app = express();
 
 app.use(express.json({extended: true, limit: '50mb'}));
-app.use(express.static(__dirname + '/client/dist'));
 
 app.use("/api/session", require("./routes/session.routes"));
 app.use("/api/code", require("./routes/code.routes"));
 app.use("/api/task", require("./routes/task.routes"));
+
+// if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/client/dist")));
+    app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "client", "dist", "index.html")));
+// }
 
 const PORT = process.env.PORT || 5000;
 
