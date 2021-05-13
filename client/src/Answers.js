@@ -113,7 +113,21 @@ const Answers = [
         `
     },
     {
-        id: 12,
+        id: 10,
+        answer:
+        `
+        const arr = sentence.split(" ");
+        let newArr = [];
+
+        arr.forEach((word) => {
+            newArr.push(word.charAt(0).toUpperCase() + word.slice(1))
+        });
+
+        return newArr.join(" ")
+        `
+    },
+    {
+        id: 11,
         answer:
         `
         let res = "";
